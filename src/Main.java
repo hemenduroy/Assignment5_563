@@ -1,127 +1,115 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+//https://stackoverflow.com/questions/15867148/why-do-we-need-to-extend-jframe-in-a-swing-application
 public class Main extends JFrame {
 		
-	protected static RosterDatabase rosterDatabase;
+	protected static RosterData rosterData;
 
 	public Main()
-	{   
+	{
+	    //https://stackoverflow.com/questions/31245320/how-to-add-a-button-to-a-jframe-gui/54291440
         setLayout(new BorderLayout());
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu file = new JMenu("File");
-        menuBar.add(file);
-
+        JMenuBar jMenuBar = new JMenuBar();
+        JMenu jMenu = new JMenu("File");
+        jMenuBar.add(jMenu);
         JMenuItem about = new JMenuItem("About");
-        menuBar.add(about);
-
-        //file menu items
-        JMenuItem loadRoster = new JMenuItem("Load a Roster");
-        file.add(loadRoster);
-
-        JMenuItem addAttendance = new JMenuItem("Add Attendance");
-        file.add(addAttendance);
-
-        JMenuItem saveRoster = new JMenuItem("Save");
-        file.add(saveRoster);
-
-        JMenuItem plotData = new JMenuItem("Plot Data");
-        file.add(plotData);
-
-        add(menuBar);
-        setJMenuBar(menuBar);
-        
+        jMenuBar.add(about);
+        JMenuItem load_a_roster = new JMenuItem("Load a Roster");
+        jMenu.add(load_a_roster);
+        JMenuItem add_attendance = new JMenuItem("Add Attendance");
+        jMenu.add(add_attendance);
+        JMenuItem save = new JMenuItem("Save");
+        jMenu.add(save);
+        JMenuItem plot_data = new JMenuItem("Plot Data");
+        jMenu.add(plot_data);
+        add(jMenuBar);
+        setJMenuBar(jMenuBar);
         setTitle("Attendance System");
         
-        Panel panel = new Panel();
+        WindowClass panel = new WindowClass();
+        //https://docs.oracle.com/javase/tutorial/uiswing/layout/border.html
         add(panel, BorderLayout.CENTER);
-        
-        rosterDatabase = new RosterDatabase();
-        rosterDatabase.addObserver(panel);
-        
-        
-        
-       
-        loadRoster.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String filePath;
-                try {
-                    filePath = new jFileChooser().getOpenFile().getAbsolutePath();
-                } catch(NullPointerException e1) {
-                    filePath = null;
-                }
-                if (filePath != null) {
-                    rosterDatabase.load(filePath);
-                }
+
+        //http://www.javaquizplayer.com/blogposts/java-swing-example-using-observer-and-observable-7.html
+        rosterData = new RosterData();
+        rosterData.addObserver(panel);
+
+        load_a_roster.addActionListener(e -> {
+            String filePath;
+            try {
+                filePath = new FileSelect().getFile().getAbsolutePath();
+            } catch(NullPointerException e1) {
+                filePath = null;
+            }
+            if (filePath != null) {
+                rosterData.load(filePath);
             }
         });
         
-        addAttendance.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (RosterDatabase.roster != null) {
-                    String inputFilepath;
-                    try {
-                        inputFilepath = new jFileChooser().getOpenFile().getAbsolutePath();
-                    } catch(NullPointerException e1) {
-                        inputFilepath = null;
-                    }
-                    if (inputFilepath != null) {
-                        DateSelect dateSelect = new DateSelect();
-                        dateSelect.dateSelect(inputFilepath);
-                    }
-                } else {
-                    // Display error for when the roster has not been loaded
-                    JFrame frame = new JFrame();
-                    JDialog dialog = new JDialog(frame, "Error");
-                    JPanel panel1 = new JPanel();
-                    JLabel message = new JLabel("ERROR: Roster must be loaded first");
-
-                    panel1.add(message);
-                    dialog.add(panel1);
-
-                    dialog.setSize(300, 70);
-                    dialog.setVisible(true);
-                }
-            }
-        });
-        
-        saveRoster.addActionListener(e -> {
-            if(RosterDatabase.roster != null) {
+        add_attendance.addActionListener(e -> {
+            if (RosterData.stuRoster != null) {
                 String inputFilepath;
                 try {
-                    inputFilepath = new jFileChooser().getSaveFile().getAbsolutePath();
+                    inputFilepath = new FileSelect().getFile().getAbsolutePath();
+                } catch(NullPointerException e1) {
+                    inputFilepath = null;
+                }
+                if (inputFilepath != null) {
+                    DateSelect dateSelect = new DateSelect();
+                    dateSelect.dateSelect(inputFilepath);
+                }
+            } else {
+                JFrame frame = new JFrame();
+                JDialog dialog = new JDialog(frame, "ERROR!");
+                JPanel panel1 = new JPanel();
+                JLabel message = new JLabel("Please load the Roster!");
+
+                panel1.add(message);
+                dialog.add(panel1);
+
+                //https://stackoverflow.com/questions/20293220/swing-set-a-fixed-window-size-for-jdialog
+                dialog.setSize(400, 100);
+                //https://stackoverflow.com/questions/25583002/jdialog-not-showing
+                dialog.setVisible(true);
+            }
+        });
+        
+        save.addActionListener(e -> {
+            if(RosterData.stuRoster != null) {
+                String inputFilepath;
+                try {
+                    inputFilepath = new FileSelect().getFileToSave().getAbsolutePath();
                 } catch(NullPointerException e1) {
                     inputFilepath = null;
                 }
                 if(inputFilepath != null) {
-                    rosterDatabase.save(inputFilepath);
+                    rosterData.save(inputFilepath);
                 }
             }
             else {
                 // Display error for when the roster has not been loaded
                 JFrame frame = new JFrame();
-                JDialog dialog = new JDialog(frame, "Error");
+                JDialog dialog = new JDialog(frame, "ERROR!");
                 JPanel panel1 = new JPanel();
-                JLabel message = new JLabel("ERROR: Roster must be loaded first");
+                JLabel message = new JLabel("Please load the Roster!");
 
                 panel1.add(message);
                 dialog.add(panel1);
 
-                dialog.setSize(300, 70);
+                //https://stackoverflow.com/questions/20293220/swing-set-a-fixed-window-size-for-jdialog
+                dialog.setSize(400, 100);
+                //https://stackoverflow.com/questions/25583002/jdialog-not-showing
                 dialog.setVisible(true);
             }
         });
         
-        plotData.addActionListener(e -> {
-            if(RosterDatabase.roster != null) {
+        plot_data.addActionListener(e -> {
+            if(RosterData.stuRoster != null) {
                 SwingUtilities.invokeLater(
                         () -> {
-                            ScatterPlot sp = new ScatterPlot("Plot Data");
+                            Plotter sp = new Plotter("Plot Data");
                             sp.setSize(800, 400);
                             sp.setLocationRelativeTo(null);
                             sp.setVisible(true);
@@ -137,6 +125,7 @@ public class Main extends JFrame {
                 panel1.add(message);
                 dialog.add(panel1);
 
+                //https://stackoverflow.com/questions/20293220/swing-set-a-fixed-window-size-for-jdialog
                 dialog.setSize(300, 70);
                 dialog.setVisible(true);
             }
@@ -146,16 +135,11 @@ public class Main extends JFrame {
             JFrame frame = new JFrame();
             JDialog dialog = new JDialog(frame, "About");
             JPanel panel1 = new JPanel();
-
-
-            String teamInfo ="Team - Hemendu Roy, Het Vallabhbhai Mendpara, Shivam Mathur, Vijay Maddineni";
-            JLabel teamInfoLabel = new JLabel(teamInfo);
-
-            panel1.add(teamInfoLabel);
+            String teamList ="Team - Hemendu Roy, Het Vallabhbhai Mendpara, Shivam Mathur, Vijay Maddineni";
+            JLabel teamBox = new JLabel(teamList);
+            panel1.add(teamBox);
             dialog.add(panel1);
-
-
-            dialog.setSize(900, 250);
+            dialog.setSize(800, 200);
             dialog.setVisible(true);
         });
 
@@ -163,6 +147,7 @@ public class Main extends JFrame {
 
 	public static void main(String[] args) {
         Main main = new Main();
+        //https://stackoverflow.com/questions/1234912/how-to-programmatically-close-a-jframe/1235994
         main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         main.setSize(main.getPreferredSize());
         main.setVisible(true);

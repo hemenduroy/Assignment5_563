@@ -5,14 +5,14 @@ import java.util.LinkedHashMap;
 
 public class Student {
 
-    private HashMap<LocalDate, Integer> attendancedat;
+    private final HashMap<LocalDate, Integer> attendancedat;
 
-    private String ID;
-    private String firstName;
-    private String surName;
-    private String ASUID;
-    private String level;
-    private String course;
+    private final String ID;
+    private final String firstName;
+    private final String surName;
+    private final String ASUID;
+    private final String level;
+    private final String course;
 
     public Student(
             String ID,
@@ -27,7 +27,7 @@ public class Student {
         this.course = course;
         this.level = level;
         this.ASUID = ASUID;
-        this.attendancedat = new LinkedHashMap();
+        this.attendancedat = new LinkedHashMap<>();
     }
 
     public void addAttendance(LocalDate date, int time) {
@@ -38,7 +38,7 @@ public class Student {
         return attendancedat.get(date);
     }
     public HashMap<LocalDate, Integer> getAttendancedat() {
-        return new LinkedHashMap(attendancedat);
+        return new LinkedHashMap<>(attendancedat);
     }
     public String getID() {
         return this.ID;

@@ -16,7 +16,6 @@
     </orderEntry>
     <orderEntry type="module-library">
       <library name="JUnit5.7.0">
-
         <JAVADOC />
         <SOURCES />
       </library>

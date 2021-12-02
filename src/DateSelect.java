@@ -1,14 +1,12 @@
 import org.jdesktop.swingx.JXDatePicker;
 
-import java.util.Map;
-import java.awt.*;
-import java.util.Calendar;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.util.Date;
-import java.time.LocalDate;
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 
 public class DateSelect {
@@ -33,56 +31,50 @@ public class DateSelect {
         jFrame.setVisible(true);
 
         jButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Date date = jxDatePicker.getDate();
-                        int gMonth = date.getMonth() + 1;
-                        int gDay = date.getDate();
-                        int gYear = date.getYear() + 1900;
+                e -> {
+                    Date date = jxDatePicker.getDate();
+                    int gMonth = date.getMonth() + 1;
+                    int gDay = date.getDate();
+                    int gYear = date.getYear() + 1900;
 
-                        LocalDate localDate = LocalDate.of(gYear, gMonth, gDay);
-                        Main.rosterDatabase.recAttendance(localDate, filepath);
+                    LocalDate localDate = LocalDate.of(gYear, gMonth, gDay);
+                    Main.rosterData.recAttendance(localDate, filepath);
 
-                        JFrame jFrame1 = new JFrame();
-                        JDialog jDialog = new JDialog(jFrame1, "Message");
+                    JFrame jFrame1 = new JFrame();
+                    JDialog jDialog = new JDialog(jFrame1, "Message");
 
-                        String msgld = "Data loaded for " + RosterDatabase.studentsAdded + " users in the roster.";
-                        String msgp =  RosterDatabase.newStudents.size()  + " additional attendee(s) was found\n";
+                    String msgld = "Data loaded for " + RosterData.addStudent + " users in the roster.";
+                    String msgp =  RosterData.newStudents.size()  + " additional attendee(s) was found\n";
 
-                        JPanel panel1 = new JPanel();
-                        JLabel msgldLabel = new JLabel(msgld);
-                        JLabel msgpLabel = new JLabel(msgp);
+                    JPanel panel1 = new JPanel();
+                    JLabel msgldLabel = new JLabel(msgld);
+                    JLabel msgpLabel = new JLabel(msgp);
 
-                        panel1.setLayout(new FlowLayout());
-                        panel1.add(msgldLabel);
-                        panel1.add(msgpLabel);
+                    panel1.setLayout(new FlowLayout());
+                    panel1.add(msgldLabel);
+                    panel1.add(msgpLabel);
 
-                        String newmsg = "";
+                    String newmsg;
 
-                        if (!RosterDatabase.newStudents.isEmpty()) {
-                            for (Map.Entry<String, Integer> i : RosterDatabase.newStudents.entrySet()) {
-                                newmsg = i.getKey() + ", connected for " + i.getValue() + " minute(s)\n";
-                                JLabel additionalLabel = new JLabel(newmsg);
-                                panel1.add(additionalLabel);
-                            }
+                    if (!RosterData.newStudents.isEmpty()) {
+                        for (Map.Entry<String, Integer> i : RosterData.newStudents.entrySet()) {
+                            newmsg = i.getKey() + ", connected for " + i.getValue() + " minute(s)\n";
+                            JLabel additionalLabel = new JLabel(newmsg);
+                            panel1.add(additionalLabel);
                         }
-
-
-                        //https://stackoverflow.com/questions/2452694/jtable-with-horizontal-scrollbar
-                        jDialog.add(new JScrollPane(panel1));
-                        //scrollPane.setSize(400, 600);
-
-                        //scrollPane.setVisible(true);
-
-
-                        jDialog.setSize(500, 300);
-                        jDialog.setVisible(true);
-
-                        RosterDatabase.newStudents.clear();
-                        RosterDatabase.studentsAdded = 0;
-                        jFrame.dispose(); // Close date picker GUI
                     }
+
+
+                    //https://stackoverflow.com/questions/2452694/jtable-with-horizontal-scrollbar
+                    jDialog.add(new JScrollPane(panel1));
+
+
+                    jDialog.setSize(800, 100);
+                    jDialog.setVisible(true);
+
+                    RosterData.newStudents.clear();
+                    RosterData.addStudent = 0;
+                    jFrame.dispose(); // Close date picker GUI
                 });
     }
 }
