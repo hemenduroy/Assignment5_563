@@ -1,10 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
-import java.util.Arrays;
-import java.util.Observer;
 import java.util.Observable;
+import java.util.Observer;
 
 
 public class WindowClass extends JPanel implements Observer {
@@ -15,34 +13,30 @@ public class WindowClass extends JPanel implements Observer {
 		JScrollPane scrollPane = new JScrollPane(jTable);
     	setLayout(new BorderLayout());
     	
-    	Dimension dimension = new Dimension();
-		dimension.setSize(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.5, Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 1.5);
-		setPreferredSize(dimension);
+    	Dimension dimension1 = new Dimension();
+		dimension1.setSize(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.5, Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 1.5);
+		setPreferredSize(dimension1);
 		
-		Dimension screen = new Dimension();
+		Dimension dimension2 = new Dimension();
 		//https://stackoverflow.com/questions/28128035/how-to-add-table-header-and-scrollbar-in-jtable-java
-		screen.setSize(Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight());
-    	setSize(screen);
-		scrollPane.setSize(screen);
+		dimension2.setSize(Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+    	setSize(dimension2);
+		scrollPane.setSize(dimension2);
     	add(scrollPane);
     	
     }
     
     @Override
-    public void update(Observable o, Object arg) {
-    	String[][] data = ((RosterData)o).getTableData();
+    public void update(Observable observable, Object o) {
+    	String[][] data = ((RosterData)observable).getTableData();
     	//https://stackoverflow.com/questions/20359228/create-a-two-dimensional-string-array-anarray22
 
-		String[] headersArr = new String[RosterData.csvHeadersList.size()];
+		String[] listHeaders = new String[RosterData.csvHeadersList.size()];
 		int i = 0;
 		for (String s : RosterData.csvHeadersList) {
-			headersArr[i] = s;
+			listHeaders[i] = s;
 			i++;
 		}
-
-		for(String[] arr : data) {
-    		System.out.println(Arrays.toString(arr));
-    	}
-    	this.jTable.setModel(new DefaultTableModel(data, headersArr));
+    	this.jTable.setModel(new DefaultTableModel(data, listHeaders));
     }
 }

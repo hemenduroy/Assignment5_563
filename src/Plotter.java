@@ -1,13 +1,14 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
+
 import javax.swing.*;
 import java.time.LocalDate;
-import org.jfree.chart.JFreeChart;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class Plotter extends JFrame {
 
         JFreeChart jFreeChart =
                 ChartFactory.createScatterPlot(
-                        "Attendance", "Percent of Attendance", "Count", xySeriesCollection);
+                        "Attendance", "Attendance Percentage", "Count", xySeriesCollection);
 
         XYPlot xyPlot = (XYPlot) jFreeChart.getPlot();
 

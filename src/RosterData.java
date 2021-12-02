@@ -45,13 +45,13 @@ public class RosterData extends Observable {
                 studentList.add(createStudent(studentAttributes));
             }
             bufferedReader.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         stuRoster = studentList;
     }
     public void load(String csvInputFile) {
-        csvHeadersList = csvHeadersList.subList(0, headers2); // reset to default headers
+        csvHeadersList = csvHeadersList.subList(0, headers2);
         this.read(csvInputFile);
         setChanged();
         notifyObservers();
@@ -85,28 +85,28 @@ public class RosterData extends Observable {
             }
             csvWriter.flush();
             csvWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
     public String[][] getTableData() {
-        String[][] tableData = new String[stuRoster.size()][];
+        String[][] rows = new String[stuRoster.size()][];
         for (int i = 0; i < stuRoster.size(); i++) {
-            String[] stuAttributes = new String[csvHeadersList.size()];
-            stuAttributes[0] = stuRoster.get(i).getID();
-            stuAttributes[1] = stuRoster.get(i).getFirstName();
-            stuAttributes[2] = stuRoster.get(i).getSurName();
-            stuAttributes[3] = stuRoster.get(i).getCourse();
-            stuAttributes[4] = stuRoster.get(i).getLevel();
-            stuAttributes[5] = stuRoster.get(i).getASUID();
-            int studentIndex = headers2;
+            String[] details = new String[csvHeadersList.size()];
+            details[0] = stuRoster.get(i).getID();
+            details[1] = stuRoster.get(i).getFirstName();
+            details[2] = stuRoster.get(i).getSurName();
+            details[3] = stuRoster.get(i).getCourse();
+            details[4] = stuRoster.get(i).getLevel();
+            details[5] = stuRoster.get(i).getASUID();
+            int stuno = headers2;
             for (Map.Entry<LocalDate, Integer> e : stuRoster.get(i).getAttendancedat().entrySet()) {
-                stuAttributes[studentIndex] = Integer.toString(e.getValue());
-                studentIndex++;
+                details[stuno] = Integer.toString(e.getValue());
+                stuno++;
             }
-            tableData[i] = stuAttributes;
+            rows[i] = details;
         }
-        return tableData;
+        return rows;
     }
     public void recAttendance(LocalDate date, String filepath) {
         try {
@@ -119,7 +119,7 @@ public class RosterData extends Observable {
             if (!csvHeadersList.contains(date.toString())) {
                 csvHeadersList.add(date.toString());
             }
-            while ((line = br.readLine()) != null) { // Read all lines of csv file
+            while ((line = br.readLine()) != null) {
                 ASURITE = line.split(delimiter)[0];
                 if (line.split(delimiter)[1].equals("")) {
                     time = 0;
@@ -127,7 +127,7 @@ public class RosterData extends Observable {
                     time = Integer.parseInt(line.split(delimiter)[1]);
                 }
                 newStudents.put(ASURITE, time);
-                for (Student student : stuRoster) { // Find student by ASURITE
+                for (Student student : stuRoster) {
                     student.addAttendance(date, 0);
                     if (student.getASUID().equals(ASURITE)) {
                         student.addAttendance(date, time);
@@ -149,8 +149,8 @@ public class RosterData extends Observable {
             br.close();
             setChanged();
             notifyObservers();
-        } catch (IOException | NumberFormatException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException | NumberFormatException exception) {
+            exception.printStackTrace();
         }
     }
 }
