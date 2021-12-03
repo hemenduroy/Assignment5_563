@@ -13,6 +13,8 @@ public class RosterData extends Observable {
     public static final String delimiter = ",";
     public static List<LocalDate> dates;
 
+    //https://www.geeksforgeeks.org/linkedhashmap-class-java-examples/
+    //https://stackoverflow.com/questions/26623129/when-to-use-linkedhashmap-over-hashmap-in-java
     public RosterData() {
         csvHeadersList = new ArrayList<>();
         csvHeadersList.add("ID");
@@ -31,6 +33,7 @@ public class RosterData extends Observable {
             File file = new File(csvFile);
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+            //https://stackoverflow.com/questions/11990211/reading-csv-file-using-bufferedreader-resulting-in-reading-alternative-lines
             String line;
             String[] studentAttributes;
             line = bufferedReader.readLine();
@@ -44,6 +47,7 @@ public class RosterData extends Observable {
                 studentAttributes = line.split(delimiter);
                 studentList.add(createStudent(studentAttributes));
             }
+            //https://www.codeproject.com/Questions/1106420/Getting-exception-on-reading-a-file
             bufferedReader.close();
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -51,6 +55,8 @@ public class RosterData extends Observable {
         stuRoster = studentList;
     }
     public void load(String csvInputFile) {
+        //https://stackoverflow.com/questions/28133529/observer-observable-in-a-gui
+        //https://coderanch.com/t/617548/java/Observer-Observable
         csvHeadersList = csvHeadersList.subList(0, headers2);
         this.read(csvInputFile);
         setChanged();
@@ -75,6 +81,7 @@ public class RosterData extends Observable {
             if (!csvHeadersList.isEmpty()) csvWriter.append(String.join(",", csvHeadersList));
             List<List<String>> tableData = new ArrayList<>();
             String[][] arrTableData = getTableData();
+            //https://stackoverflow.com/questions/51118768/how-to-add-delimiter-while-writing-csv-file-using-opencsv/51118838
             for (String[] arrTableDatum : arrTableData) {
                 List<String> tableRow = Arrays.asList(arrTableDatum);
                 tableData.add(tableRow);
@@ -90,6 +97,7 @@ public class RosterData extends Observable {
         }
     }
     public String[][] getTableData() {
+        //https://www.geeksforgeeks.org/how-to-iterate-linkedhashmap-in-java/
         String[][] rows = new String[stuRoster.size()][];
         for (int i = 0; i < stuRoster.size(); i++) {
             String[] details = new String[csvHeadersList.size()];
@@ -111,15 +119,15 @@ public class RosterData extends Observable {
     public void recAttendance(LocalDate date, String filepath) {
         try {
             File file = new File(filepath);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line;
             String ASURITE;
             int time;
             if (!csvHeadersList.contains(date.toString())) {
                 csvHeadersList.add(date.toString());
             }
-            while ((line = br.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 ASURITE = line.split(delimiter)[0];
                 if (line.split(delimiter)[1].equals("")) {
                     time = 0;
@@ -127,6 +135,7 @@ public class RosterData extends Observable {
                     time = Integer.parseInt(line.split(delimiter)[1]);
                 }
                 newStudents.put(ASURITE, time);
+                //https://github.com/arnaudroger/SimpleFlatMapper/issues/511
                 for (Student student : stuRoster) {
                     student.addAttendance(date, 0);
                     if (student.getASUID().equals(ASURITE)) {
@@ -146,7 +155,8 @@ public class RosterData extends Observable {
                     }
                 }
             }
-            br.close();
+            bufferedReader.close();
+            //https://stackoverflow.com/questions/41367350/observable-notifyobservers-nullpointerexception
             setChanged();
             notifyObservers();
         } catch (IOException | NumberFormatException exception) {
